@@ -1,0 +1,20 @@
+version: '3'
+services:
+  web:
+    container_name: min-ts-node
+    image: node:8.11.1
+    working_dir: /app
+    environment:
+    - NODE_ENV=development
+    - PATH=/app/node_modules/.bin:$PATH
+    volumes:
+    - ./:/app
+    - node_modules:/app/node_modules
+    ports:
+    - "3000:3000"
+    command: bash /app/entry.sh
+    stdin_open: true
+    tty: true
+
+volumes:
+  node_modules:

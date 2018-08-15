@@ -1,0 +1,72 @@
+version: 2
+jobs:
+  build-and-test:
+    working_directory: ~/app
+    docker:
+    - image: circleci/node:8.11.3
+    steps:
+    - checkout
+    - restore_cache:
+        name: Restore Yarn Package Cache
+        keys:
+        - yarn-packages-{{ checksum "yarn.lock" }}
+    - run:
+        name: Install dependencies
+        command: 'sudo yarn install'
+    - save_cache:
+        name: Save Yarn Package Cache
+        key: yarn-packages-{{ checksum "yarn.lock" }}
+        paths:
+        - ~/.cache/yarn
+    - run:
+        name: Run Typescript
+        command: 'yarn build-ts'
+    - run:
+        name: Run Typescript lint
+        command: 'yarn tslint'
+    - run:
+        name: Run tests
+        command: 'yarn test'
+# add this line if staging or production server is ready
+#    - run:
+#        name: Run cypress e2e testing
+#        command: 'yarn cypress:run'
+
+###
+### This is staging and production configuration
+### uncomment this if the environments are setup
+#  deploy-stage:
+#    docker:
+#    - image: ubuntu:14.04
+#    working_directory: /tmp/app
+#    steps:
+#    - run:
+#        name: Deploy if tests pass and branch is Staging
+#        command: command here
+#
+#  deploy-prod:
+#    docker:
+#    - image: ubuntu:14.04
+#    working_directory: /tmp/app
+#    steps:
+#    - run:
+#        name: Deploy if tests pass and branch is Master
+#        command: command here
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build-and-test
+#      - deploy-stage:
+#          requires:
+#          - build
+#          filters:
+#            branches:
+#              only: staging
+#      - deploy-prod:
+#          requires:
+#          - build
+#          filters:
+#            branches:
+#              only: master
