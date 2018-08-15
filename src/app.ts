@@ -1,15 +1,13 @@
 import createError from "http-errors";
 import express, { Request, Response, NextFunction } from "express";
 import path from "path";
-import cookieParser from "cookie-parser";
 import logger from "morgan";
 import lusca from "lusca";
-import webpack from "webpack";
-import webpackDevMiddleWare from "webpack-dev-middleware";
-import expressHbs from "express-handlebars";
 import dotenv from "dotenv";
+import bodyParser from "body-parser";
+import session from "express-session";
+import cors from "cors";
 
-import webpackConfig from "./webpack.config";
 import routes from "./routes";
 
 const app = express();
@@ -20,19 +18,22 @@ app.set("port", process.env.PORT || 8000);
 // load environment variables
 dotenv.config({ path: ".env.example" });
 
-// webpack
-app.use(webpackDevMiddleWare(webpack(webpackConfig)));
-
-// view engine setup
-app.set("views", path.join(__dirname, "../views"));
-app.engine(".hbs", expressHbs({ defaultLayout: "layout", extname: ".hbs" }));
-app.set("view engine", ".hbs");
+const isProduction = process.env.NODE_ENV === "production";
 
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+
+// cors
+app.use(cors());
+
+// bodyParser
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+// express sessions
+app.use(session({ secret: "CHANGE_THIS_PROPERTY_TO_DOTENV_VALUE", cookie: { maxAge: 60000 }, resave: false, saveUninitialized: false  }));
 
 // security
 app.use(lusca.xframe("SAMEORIGIN"));
@@ -46,6 +47,37 @@ app.use((req, res, next) => {
   next(createError(404));
 });
 
+/// catch 404 and forward to error handler
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  const error = new Error("Not Found");
+  error.status = 404;
+  next(error);
+});
+
+// will print stacktrace
+if (!isProduction) {
+  app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+    console.log(err.stack);
+
+    res.status(err.status || 500);
+
+    res.json({"errors": {
+        message: err.message,
+        error: err
+      }});
+  });
+}
+
+// production error handler
+// no stack traces leaked to user
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  res.status(err.status || 500);
+  res.json({"errors": {
+      message: err.message,
+      error: {}
+    }});
+});
+
 // error handler
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   // set locals, only providing error in development
@@ -54,7 +86,7 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 
   // render the error page
   res.status(err.status || 500);
-  res.render("error");
+  next(err);
 });
 
 export default app;
