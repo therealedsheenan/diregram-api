@@ -33,5 +33,5 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
 
 // logout user
 export const logout = (req: Request, res: Response, next: NextFunction) => {
-  return false
+  return false;
 };
