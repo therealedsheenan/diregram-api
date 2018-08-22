@@ -9,3 +9,6 @@ const router = express.Router();
 // checks email and password
 router.post("/login", user.login);
 router.post("/logout", user.logout);
+router.post("/sign-up", user.signUp);
+
+export default router;

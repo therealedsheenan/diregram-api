@@ -7,8 +7,9 @@ import dotenv from "dotenv";
 import bodyParser from "body-parser";
 import session from "express-session";
 import cors from "cors";
+import mongoose from "mongoose";
 
-import routes from "./routes";
+import routes from "./routes/";
 
 const app = express();
 
@@ -23,17 +24,32 @@ const isProduction = process.env.NODE_ENV === "production";
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, "public")));
 
 // cors
 app.use(cors());
+
+// database
+// mongo database
+if (isProduction) {
+  mongoose.connect(process.env.MONGODB_URI);
+} else {
+  mongoose.connect("mongodb://localhost/diregram-api");
+  mongoose.set("debug", true);
+}
 
 // bodyParser
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // express sessions
-app.use(session({ secret: "CHANGE_THIS_PROPERTY_TO_DOTENV_VALUE", cookie: { maxAge: 60000 }, resave: false, saveUninitialized: false  }));
+app.use(
+  session({
+    secret: "CHANGE_THIS_PROPERTY_TO_DOTENV_VALUE",
+    cookie: { maxAge: 60000 },
+    resave: false,
+    saveUninitialized: false
+  })
+);
 
 // security
 app.use(lusca.xframe("SAMEORIGIN"));
@@ -61,10 +77,12 @@ if (!isProduction) {
 
     res.status(err.status || 500);
 
-    res.json({"errors": {
+    res.json({
+      errors: {
         message: err.message,
         error: err
-      }});
+      }
+    });
   });
 }
 
@@ -72,10 +90,12 @@ if (!isProduction) {
 // no stack traces leaked to user
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   res.status(err.status || 500);
-  res.json({"errors": {
+  res.json({
+    errors: {
       message: err.message,
       error: {}
-    }});
+    }
+  });
 });
 
 // error handler

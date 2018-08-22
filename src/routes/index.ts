@@ -1,7 +1,6 @@
+import express from "express";
 
-import * as express from "express";
-
-import api from "./api";
+import api from "./api/";
 
 const router = express.Router();
 const VERSION = "1.0";
