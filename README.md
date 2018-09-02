@@ -61,6 +61,8 @@ $ source ~/.bashrc
 
 For more information checkout: https://gist.github.com/d2s/372b5943bce17b964a79
 
+### About the API
+
 #### Author
 Sheenan Tenepre
 
