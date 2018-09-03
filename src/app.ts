@@ -9,8 +9,6 @@ import session from "express-session";
 import cors from "cors";
 import mongoose from "mongoose";
 
-import routes from "./routes/";
-
 const app = express();
 
 // port
@@ -55,7 +53,11 @@ app.use(
 app.use(lusca.xframe("SAMEORIGIN"));
 app.use(lusca.xssProtection(true));
 
+// models
+import("./models/User");
+
 // routes
+import routes from "./routes/";
 app.use(routes);
 
 // catch 404 and forward to error handler

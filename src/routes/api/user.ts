@@ -1,9 +1,9 @@
-import express from "express";
+import { Router } from "express";
 import auth from "../auth";
 
 import * as user from "../../controllers/user";
 
-const router = express.Router();
+const router = Router();
 
 // logging in
 // checks email and password

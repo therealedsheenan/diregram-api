@@ -1,18 +1,19 @@
-import mongoose from "mongoose";
 import passport from "passport";
-import express, { NextFunction, Request, Response } from "express";
+import mongoose from "mongoose";
+import { NextFunction, Request, Response } from "express";
 import pick from "lodash/pick";
 
 // import types
-import User, { UserModel } from "../models/User";
-const router = express.Router();
+import { UserModel } from "../models/User";
+
+const User = mongoose.model("User");
 
 /*
  * USER CONTROLLER FUNCTIONS
  */
 
 // login user
-export const login = (req: Request, res: Response, next: NextFunction) => {
+export function login (req: Request, res: Response, next: NextFunction) {
   const { email, password } = req.body.user;
   if (!email) {
     res.status(422).json({ errors: { email: "can't be blank" } });
@@ -38,23 +39,21 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
       }
     }
   )(req, res, next);
-};
+}
 
 // logout user
-export const logout = (req: Request, res: Response, next: NextFunction) => {
+export function logout (req: Request, res: Response, next: NextFunction) {
   // TODO: add logout logic here
   return false;
-};
+}
 
 // register user
-export const signUp = (req: Request, res: Response, next: NextFunction) => {
-  const newUser = new User(pick(req.body, ["email", "password"]));
+export function signUp (req: Request, res: Response, next: NextFunction) {
+  const newUser: any = new User(pick(req.body, ["email", "password"]));
   newUser.save().then(() => {
-    return newUser.generateJWT();
-  }).then((token: string) => {
-    res.header("x-auth", token).send(newUser);
+    return res.json({user: newUser.toAuthJSON()});
   }).catch((e: Error) => {
     res.status(400).send(e);
   });
-};
+}
 
