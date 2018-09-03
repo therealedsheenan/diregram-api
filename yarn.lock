@@ -321,9 +321,17 @@
   dependencies:
     "@types/mongoose" "*"
 
-"@types/mongoose@*", "@types/mongoose@^5.2.6":
+"@types/mongoose@*":
   version "5.2.6"
   resolved "https://registry.yarnpkg.com/@types/mongoose/-/mongoose-5.2.6.tgz#96b89f8a35b37b3beb5bf50572ac6cf7f7d52453"
+  dependencies:
+    "@types/events" "*"
+    "@types/mongodb" "*"
+    "@types/node" "*"
+
+"@types/mongoose@^5.2.9":
+  version "5.2.9"
+  resolved "https://registry.yarnpkg.com/@types/mongoose/-/mongoose-5.2.9.tgz#28357437bf8873e93de2f0c8b5cf67b82d8f7181"
   dependencies:
     "@types/events" "*"
     "@types/mongodb" "*"
