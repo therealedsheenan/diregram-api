@@ -14,27 +14,29 @@ const User = mongoose.model("User");
 
 // login user
 export function login (req: Request, res: Response, next: NextFunction) {
-  const { email, password } = req.body.user;
-  if (!email) {
+  const user = pick(req.body.user, ["password", "email"]);
+  if (!user.email) {
     res.status(422).json({ errors: { email: "can't be blank" } });
   }
 
-  if (!password) {
+  if (!user.password) {
     res.status(422).json({ errors: { password: "can't be blank" } });
   }
+
+  console.log(user);
+
 
   // passport strategy
   passport.authenticate(
     "local",
     { session: false },
     (err: String, user: UserModel, info: String) => {
-      if (err) {
-        return next(err);
-      }
+      if (err) { return next(err); }
 
       if (!user) {
         return res.status(422).json(info);
       } else {
+        user.token = user.generateJWT();
         return res.json({ user: user.toAuthJSON() });
       }
     }
@@ -49,14 +51,11 @@ export function logout (req: Request, res: Response, next: NextFunction) {
 
 // register user
 export function signUp (req: Request, res: Response, next: NextFunction) {
-  const newUser: any = new User();
-  newUser.username = req.body.user.username;
-  newUser.email = req.body.user.email;
-  // const newUser: any = new User(pick(req.body.user, ["username", "email"]));
+  const newUser: any = new User(pick(req.body.user, ["username", "email"]));
   newUser.setPassword(pick(req.body.user, ["password"]).password);
-  newUser.save().then(() => {
-    return res.json({user: newUser.toAuthJSON()});
-  }).catch((e: Error) => {
+
+  newUser.save().then(() => res.json({user: newUser.toAuthJSON()})
+  ).catch((e: Error) => {
     res.status(400).send(e);
   });
 }

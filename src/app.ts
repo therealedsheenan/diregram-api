@@ -11,6 +11,7 @@ import mongoose from "mongoose";
 
 // models
 import "./models/User";
+import "./services/passport";
 
 const app = express();
 

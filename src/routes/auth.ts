@@ -1,7 +1,5 @@
 import jwt from "express-jwt";
 
-const secretKey = process.env.SECRET_KEY;
-
 // getting Token or Bearer
 const getTokenFromHeader = (req: any) => {
   if (req.headers.authorization && req.headers.authorization.split(" ")[0] === "Bearer") {
@@ -13,12 +11,12 @@ const getTokenFromHeader = (req: any) => {
 
 const auth = {
   required: jwt({
-    secret: secretKey,
+    secret: process.env.SECRET_KEY,
     userProperty: "params",
     getToken: getTokenFromHeader
   }),
   optional: jwt({
-    secret: secretKey,
+    secret: process.env.SECRET_KEY,
     userProperty: "params",
     credentialsRequired: false,
     getToken: getTokenFromHeader
