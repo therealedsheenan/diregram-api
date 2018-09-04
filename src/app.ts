@@ -11,6 +11,10 @@ import mongoose from "mongoose";
 
 // models
 import "./models/User";
+import "./models/Comment";
+import "./models/Post";
+
+// passport strategy
 import "./services/passport";
 
 const app = express();
