@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import user from "./user";
+import post from "./post";
 
 const router = express.Router();
 
@@ -10,5 +11,6 @@ router.get("/", (req: Request, res: Response) =>
 
 // api endpoints
 router.use("/user", user);
+router.use("/post", post);
 
 export default router;

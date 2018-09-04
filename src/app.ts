@@ -13,6 +13,7 @@ import mongoose from "mongoose";
 import "./models/User";
 import "./models/Comment";
 import "./models/Post";
+import "./models/Upload";
 
 // passport strategy
 import "./services/passport";
@@ -68,13 +69,6 @@ app.use(routes);
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   next(createError(404));
-});
-
-/// catch 404 and forward to error handler
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  const error = new Error("Not Found");
-  error.status = 404;
-  next(error);
 });
 
 // will print stacktrace

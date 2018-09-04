@@ -18,4 +18,4 @@ const postSchema = new mongoose.Schema({
   comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }]
 }, { timestamps: true });
 
-mongoose.model("Post", postSchema);
+export let Post = mongoose.model("Post", postSchema);

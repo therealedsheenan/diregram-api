@@ -3,6 +3,8 @@ import uniqueValidator from "mongoose-unique-validator";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 
+import { PostModel } from "./Post";
+
 export type UserModel = mongoose.Document & {
   type: String,
   username: String,
@@ -15,6 +17,7 @@ export type UserModel = mongoose.Document & {
   generateJWT: Function,
   firstName: String,
   lastName: String,
+  posts: PostModel[]
 };
 
 // schema
@@ -46,7 +49,8 @@ const UserSchema = new mongoose.Schema({
     location: String,
     website: String,
     picture: String
-  }
+  },
+  posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }]
 }, { timestamps: true });
 
 // unique data
@@ -88,4 +92,4 @@ UserSchema.methods.toAuthJSON = function () {
 };
 
 // declare model
-mongoose.model("User", UserSchema);
+export let User = mongoose.model("User", UserSchema);
