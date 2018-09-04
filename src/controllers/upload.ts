@@ -38,20 +38,37 @@ export let uploadMiddleware = upload.single("image");
 * uploading image
 */
 export let postUpload = (req: any, res: Response, next: NextFunction) => {
+  if (!req.body.caption) {
+    res.status(422).json({ errors: { caption: "can't be blank" } });
+  }
+
+  if (!req.body.title) {
+    res.status(422).json({ errors: { title: "can't be blank" } });
+  }
+
+  if (!req.file.path) {
+    res.status(422).json({ errors: { file: "can't be blank" } });
+  }
+
   const newUpload = new Upload({
     _id: new mongoose.Types.ObjectId(),
     image: req.file.path
   });
 
+
   newUpload
     .save()
     .then((result: UploadModel) => {
-      return res.json({ upload: result });
+      req.upload = result;
+      next();
+      // return res.json({ upload: result });
     })
     .catch(err => {
-      res.status(500).json({
-        error: err
-      });
+      res
+        .status(500)
+        .json({
+          error: err
+        });
     });
 };
 
@@ -76,7 +93,6 @@ export let getUpload = (req: Request, res: Response) => {
       }
     })
     .catch(err => {
-      console.log(err);
       res.status(500).json({ error: err });
     });
 };

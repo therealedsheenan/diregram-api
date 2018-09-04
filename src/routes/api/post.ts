@@ -8,7 +8,7 @@ const router = Router();
 
 router.post(
   "/",
-  // auth.required,
+  auth.required,
   upload.uploadMiddleware,
   upload.postUpload,
   post.createPost

@@ -10,7 +10,7 @@ const User = mongoose.model("User");
 export function createPost (req: Request, res: Response, next: NextFunction) {
   // upload.postUpload
   const newPost = new Post({
-    owner: req.user.id,
+    owner: req.payload.id,
     caption: req.body.caption,
     title: req.body.title,
     image: req.upload._id
