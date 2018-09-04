@@ -3,8 +3,6 @@ import uniqueValidator from "mongoose-unique-validator";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 
-const secretKey = process.env.SECRET_KEY;
-
 export type UserModel = mongoose.Document & {
   type: String,
   username: String,
@@ -21,31 +19,38 @@ export type UserModel = mongoose.Document & {
 
 // schema
 const UserSchema = new mongoose.Schema({
-  type: {
+  username: {
     type: String,
-    required: true,
-    enum: ["Teacher", "Student", "Admin"]
+    lowercase: true,
+    unique: true,
+    required: [true, "can't be blank"],
+    match: [/^[a-zA-Z0-9]+$/, "is invalid"],
+    index: true
   },
-  username: {type: String, lowercase: true, unique: true, required: [true, "can't be blank"], match: [/^[a-zA-Z0-9]+$/, "is invalid"], index: true},
-  email: {type: String, lowercase: true, unique: true, required: [true, "can't be blank"], match: [/\S+@\S+\.\S+/, "is invalid"], index: true},
-  avatar: {
+  email: {
     type: String,
-    required: true
+    lowercase: true,
+    unique: true,
+    required: [true, "can't be blank"],
+    match: [/\S+@\S+\.\S+/, "is invalid"],
+    index: true
+  },
+  avatar: {
+    type: String
   },
   hash: String,
   salt: String,
-  firstName: {
-    type: String,
-    required: [true, "can't be blank"]
-  },
-  lastName: {
-    type: String,
-    required: [true, "can't be blank"]
+  profile: {
+    name: String,
+    gender: String,
+    location: String,
+    website: String,
+    picture: String
   }
-}, {timestamps: true});
+}, { timestamps: true });
 
 // unique data
-UserSchema.plugin(uniqueValidator, {message: "is already taken."});
+UserSchema.plugin(uniqueValidator, { message: "is already taken." });
 
 // check password
 UserSchema.methods.validPassword = function (password: string) {
@@ -69,7 +74,7 @@ UserSchema.methods.generateJWT = function () {
     id: this._id,
     username: this.username,
     exp: parseInt(`${exp.getTime() / 1000}`)
-  }, secretKey);
+  }, process.env.SECRET_KEY);
 };
 
 // translate to JSON
@@ -78,9 +83,7 @@ UserSchema.methods.toAuthJSON = function () {
     id: this._id,
     username: this.username,
     email: this.email,
-    token: this.generateJWT(),
-    avatar: this.avatar,
-    type: this.type
+    token: this.generateJWT()
   };
 };
 

@@ -49,7 +49,11 @@ export function logout (req: Request, res: Response, next: NextFunction) {
 
 // register user
 export function signUp (req: Request, res: Response, next: NextFunction) {
-  const newUser: any = new User(pick(req.body, ["email", "password"]));
+  const newUser: any = new User();
+  newUser.username = req.body.user.username;
+  newUser.email = req.body.user.email;
+  // const newUser: any = new User(pick(req.body.user, ["username", "email"]));
+  newUser.setPassword(pick(req.body.user, ["password"]).password);
   newUser.save().then(() => {
     return res.json({user: newUser.toAuthJSON()});
   }).catch((e: Error) => {

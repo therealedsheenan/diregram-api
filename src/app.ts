@@ -9,13 +9,16 @@ import session from "express-session";
 import cors from "cors";
 import mongoose from "mongoose";
 
+// models
+import "./models/User";
+
 const app = express();
 
 // port
 app.set("port", process.env.PORT || 8000);
 
 // load environment variables
-dotenv.config({ path: ".env.example" });
+dotenv.config({ path: ".env" });
 
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -52,9 +55,6 @@ app.use(
 // security
 app.use(lusca.xframe("SAMEORIGIN"));
 app.use(lusca.xssProtection(true));
-
-// models
-import("./models/User");
 
 // routes
 import routes from "./routes/";
