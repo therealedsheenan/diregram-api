@@ -6,6 +6,11 @@ import * as upload from "../../controllers/upload";
 
 const router = Router();
 
+router.get(
+  "/",
+  post.readAllPosts
+);
+
 router.post(
   "/",
   auth.required,

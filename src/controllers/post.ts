@@ -2,10 +2,42 @@ import passport from "passport";
 import mongoose from "mongoose";
 import { NextFunction, Request, Response } from "express";
 
-import { Post, PostModel } from "../models/Post";
+import { PostModel } from "../models/Post";
 import { UserModel } from "../models/user";
 
 const User = mongoose.model("User");
+const Post = mongoose.model("Post");
+
+export function readAllPosts (req: Request, res: Response, next: NextFunction) {
+  Post
+    .find(
+      {},
+      undefined,
+      { sort: { "createdAt": "desc" } },
+      (err, posts: Array<PostModel>) => {
+        if (err) { return next(err); }
+
+        const opts = [{
+          path: "image"
+        }, {
+          path: "owner",
+          select: "profile username"
+        }, {
+          path: "comments",
+          populate: {
+            path: "owner",
+            select: "username"
+          }
+        }];
+
+        Post.populate(posts, opts, (err, posts: Array<PostModel>) => {
+          res.json({ posts });
+        })
+      })
+    .catch((err) => {
+      return res.status(500).json({  error: err  });
+    });
+}
 
 export function createPost (req: Request, res: Response, next: NextFunction) {
   // upload.postUpload
