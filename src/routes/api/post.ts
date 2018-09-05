@@ -27,4 +27,11 @@ router.get(
   post.readPost
 );
 
+// update post
+router.put(
+  "/:postId",
+  auth.required,
+  post.updatePost
+);
+
 export default router;

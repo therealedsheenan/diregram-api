@@ -23,9 +23,6 @@ export function login (req: Request, res: Response, next: NextFunction) {
     res.status(422).json({ errors: { password: "can't be blank" } });
   }
 
-  console.log(user);
-
-
   // passport strategy
   passport.authenticate(
     "local",

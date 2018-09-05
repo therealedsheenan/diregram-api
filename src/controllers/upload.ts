@@ -32,17 +32,17 @@ const opts = {
 
 const upload = multer(opts);
 
-export let uploadMiddleware = upload.single("image");
+export let uploadMiddleware = upload.single("post[image]");
 
 /*
 * uploading image
 */
 export let postUpload = (req: any, res: Response, next: NextFunction) => {
-  if (!req.body.caption) {
+  if (!req.body.post.caption) {
     res.status(422).json({ errors: { caption: "can't be blank" } });
   }
 
-  if (!req.body.title) {
+  if (!req.body.post.title) {
     res.status(422).json({ errors: { title: "can't be blank" } });
   }
 

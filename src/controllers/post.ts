@@ -4,6 +4,7 @@ import { NextFunction, Request, Response } from "express";
 
 import { PostModel } from "../models/Post";
 import { UserModel } from "../models/user";
+import pick from "lodash/pick";
 
 const User = mongoose.model("User");
 const Post = mongoose.model("Post");
@@ -22,6 +23,11 @@ const postOpts = [{
   }
 }];
 
+
+/*
+* GET ALL POSTS
+* GET /posts/all
+*/
 export function readAllPosts (req: Request, res: Response, next: NextFunction) {
   Post
     .find(
@@ -40,12 +46,17 @@ export function readAllPosts (req: Request, res: Response, next: NextFunction) {
     });
 }
 
+
+/*
+* Create new post
+* POST /post/
+*/
 export function createPost (req: Request, res: Response, next: NextFunction) {
   // upload.postUpload
   const newPost = new Post({
     owner: req.payload.id,
-    caption: req.body.caption,
-    title: req.body.title,
+    caption: req.body.post.caption,
+    title: req.body.post.title,
     image: req.upload._id
   });
 
@@ -67,12 +78,42 @@ export function createPost (req: Request, res: Response, next: NextFunction) {
     });
 }
 
+/*
+* Get specific post via id
+* GET /post/:postId
+*/
 export function readPost (req: Request, res: Response, next: NextFunction) {
   if (!req.params.postId) {
     res.status(422).json({ errors: { postId: "Invalid post ID" } });
   }
   Post
     .findById(req.params.postId)
+    .populate(postOpts)
+    .exec((err: Error, post: PostModel) => {
+      if (err) { return next(err); }
+      return res.json({ post });
+    })
+}
+
+/*
+* Update specific post via id
+* PUT /post/:postId
+*/
+export function updatePost (req: Request, res: Response, next: NextFunction) {
+  const updatePost = pick(req.body.post, ["caption", "title"]);
+  if (!req.params.postId) {
+    return res.status(422).json({ errors: { postId: "Invalid post ID" } });
+  }
+
+  if (!updatePost.caption) {
+    return res.status(422).json({ errors: { caption: "Can't be blank" } });
+  }
+
+  if (!updatePost.title) {
+    return res.status(422).json({ errors: { title: "Can't be blank" } });
+  }
+  Post
+    .findByIdAndUpdate(req.params.postId, updatePost, { new: true })
     .populate(postOpts)
     .exec((err: Error, post: PostModel) => {
       if (err) { return next(err); }
