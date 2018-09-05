@@ -11,6 +11,8 @@ router.get("/", (req: Request, res: Response) =>
 
 // api endpoints
 router.use("/user", user);
+
+// all posts
 router.use("/post", post);
 
 export default router;
