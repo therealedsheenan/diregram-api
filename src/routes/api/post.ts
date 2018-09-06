@@ -6,7 +6,7 @@ import * as upload from "../../controllers/upload";
 
 const router = Router();
 
-// all posts
+// all posts from all users
 router.get(
   "/all",
   post.readAllPosts

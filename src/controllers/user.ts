@@ -8,6 +8,18 @@ import { UserModel } from "../models/User";
 
 const User = mongoose.model("User");
 
+// profile population options
+const profileOpts = [
+  {
+    path: "posts",
+    options: { sort: { createdAt: "desc" } },
+    populate: [
+      { path: "image" },
+      // { path: "owner" }
+    ]
+  }
+];
+
 /*
  * USER CONTROLLER FUNCTIONS
  */
@@ -56,4 +68,58 @@ export function signUp (req: Request, res: Response, next: NextFunction) {
     res.status(400).send(e);
   });
 }
+
+// read user profile from Authentication token
+export function readCurrentProfile (req: Request, res: Response, next: NextFunction) {
+  const userId = req.payload.id; // current user's id
+  User.findById(userId, (err, user: UserModel) => {
+    if (err || !user) {
+      res.status(404);
+      return next(err);
+    }
+    return res.json({ user: pick(user, ["username", "email", "createdAt"]) });
+  });
+};
+
+// read profile via USERNAME
+export function readProfile (req: Request, res: Response, next: NextFunction) {
+  const userName = req.params.username;
+  User.findOne({ username: userName }, (err, user: UserModel) => {
+    if (err || !user) {
+      res.status(404);
+      return next(err);
+    }
+    return res.json({
+      user: pick(user, ["username", "email", "createdAt"])
+    });
+  });
+};
+
+// read cuyrrent user posts
+export function readUserPosts (req: Request, res: Response, next: NextFunction) {
+  const userId = req.payload.id; // current user's id
+  User.findById(userId)
+    .populate({
+      path: "posts",
+      options: { sort: { createdAt: "desc" } },
+      populate: [
+        {
+          path: "image"
+        },
+        {
+          path: "comments",
+          populate: {
+            path: "owner",
+            select: "username"
+          }
+        }
+      ]
+    })
+    .exec((err, user: UserModel) => {
+      if (err) { return next(err); }
+      const posts = user.posts;
+      return res.json({ posts })
+    });
+};
+
 
