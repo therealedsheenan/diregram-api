@@ -62,8 +62,8 @@ app.use(
 app.use(lusca.xframe("SAMEORIGIN"));
 app.use(lusca.xssProtection(true));
 
-// static files
-app.use(express.static(path.join(__dirname, "uploads")));
+// static uploads folder
+app.use("/uploads", express.static("uploads"));
 
 // routes
 import routes from "./routes/";
