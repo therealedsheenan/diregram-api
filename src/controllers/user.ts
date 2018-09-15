@@ -28,11 +28,11 @@ const profileOpts = [
 export function login (req: Request, res: Response, next: NextFunction) {
   const user = pick(req.body.user, ["password", "email"]);
   if (!user.email) {
-    res.status(422).json({ errors: { email: "can't be blank" } });
+    return res.status(422).json({ errors: { email: "can't be blank" } });
   }
 
   if (!user.password) {
-    res.status(422).json({ errors: { password: "can't be blank" } });
+    return res.status(422).json({ errors: { password: "can't be blank" } });
   }
 
   // passport strategy
