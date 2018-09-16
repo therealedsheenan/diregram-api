@@ -5,10 +5,12 @@ import * as user from "../../controllers/user";
 
 const router = Router();
 
+// users posts
+router.get("/:username/posts", user.readUserPosts);
+
 // get current user's profile
 router.get("/profile", auth.required, user.readCurrentProfile);
 router.get("/profile/:username", user.readProfile);
-router.get("/profile/:username/posts", user.readUserPosts);
 
 // authentication
 router.post("/login", user.login);
