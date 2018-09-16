@@ -8,9 +8,7 @@ const router = Router();
 // get current user's profile
 router.get("/profile", auth.required, user.readCurrentProfile);
 router.get("/profile/:username", user.readProfile);
-
-// get current user's posts
-router.get("/posts", auth.required, user.readUserPosts);
+router.get("/profile/:username/posts", user.readUserPosts);
 
 // authentication
 router.post("/login", user.login);

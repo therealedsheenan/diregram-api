@@ -97,8 +97,8 @@ export function readProfile (req: Request, res: Response, next: NextFunction) {
 
 // read cuyrrent user posts
 export function readUserPosts (req: Request, res: Response, next: NextFunction) {
-  const userId = req.payload.id; // current user's id
-  User.findById(userId)
+  const userName = req.params.username;
+  User.findOne({ username: userName })
     .populate({
       path: "posts",
       options: { sort: { createdAt: "desc" } },
