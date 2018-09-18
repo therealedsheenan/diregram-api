@@ -39,15 +39,15 @@ export let uploadMiddleware = upload.single("post[image]");
 */
 export let postUpload = (req: any, res: Response, next: NextFunction) => {
   if (!req.body.post.caption) {
-    res.status(422).json({ errors: { caption: "can't be blank" } });
+    return res.status(422).json({ errors: { caption: "can't be blank" } });
   }
 
   if (!req.body.post.title) {
-    res.status(422).json({ errors: { title: "can't be blank" } });
+    return res.status(422).json({ errors: { title: "can't be blank" } });
   }
 
   if (!req.file.path) {
-    res.status(422).json({ errors: { file: "can't be blank" } });
+    return res.status(422).json({ errors: { file: "can't be blank" } });
   }
 
   const newUpload = new Upload({
