@@ -39,7 +39,7 @@ export function readAllPosts (req: Request, res: Response, next: NextFunction) {
 
         Post.populate(posts, postOpts, (err, posts: Array<PostModel>) => {
           res.json({ posts });
-        })
+        });
       })
     .catch((err) => {
       return res.status(500).json({  error: err  });
@@ -69,7 +69,9 @@ export function createPost (req: Request, res: Response, next: NextFunction) {
         user.posts.push(result);
         user.save((err) => {
           if (err) { return next(err); }
-          res.json({ post: result });
+          Post.populate(result, postOpts, (err, posts: Array<PostModel>) => {
+            res.json({ post: result });
+          });
         });
       });
     })
