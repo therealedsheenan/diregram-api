@@ -12,6 +12,14 @@ router.get("/:username/posts", user.readUserPosts);
 router.get("/profile", auth.required, user.readCurrentProfile);
 router.get("/profile/:username", user.readProfile);
 
+// avatar
+router.post(
+  "/avatar",
+  auth.required,
+  user.avatarUploadMiddleware,
+  user.postAvatar
+);
+
 // authentication
 router.post("/login", user.login);
 router.post("/logout", user.logout);
