@@ -96,7 +96,7 @@ export function readProfile (req: Request, res: Response, next: NextFunction) {
       return next(err);
     }
     return res.json({
-      user: pick(user, ["username", "email", "createdAt"])
+      user: pick(user, ["username", "email", "createdAt", "avatar"])
     });
   });
 };
