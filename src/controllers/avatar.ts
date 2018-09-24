@@ -21,7 +21,7 @@ export const avatarUploadMiddleware = (multer => {
 })(multer);
 
 /*
-* uploading image
+* uploading avatar image
 */
 export let postAvatar = (req: Request, res: Response, next: NextFunction) => {
   if (!req.file.path) {
@@ -39,10 +39,8 @@ export let postAvatar = (req: Request, res: Response, next: NextFunction) => {
     .then((avatar: AvatarModel) => {
       return res.json({ avatar });
     })
-    .catch(err => {
-      res.status(500).json({
-        error: err
-      });
+    .catch((error: Error) => {
+      res.status(500).json({ error });
     });
 };
 

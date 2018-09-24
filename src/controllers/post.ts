@@ -14,7 +14,7 @@ const postOpts = [{
   path: "image"
 }, {
   path: "owner",
-  select: "profile username"
+  select: "profile username avatar"
 }, {
   path: "comments",
   populate: {
@@ -63,14 +63,15 @@ export function createPost (req: Request, res: Response, next: NextFunction) {
   newPost
     .save()
     .then((result: PostModel) => {
-      // populat post"s author
+      // populate post"s author
       User.findById(req.payload.id, (err, user: UserModel) => {
         if (err) { return next(err); }
+        console.log(user);
         user.posts.push(result);
         user.save((err) => {
           if (err) { return next(err); }
           Post.populate(result, postOpts, (err, posts: Array<PostModel>) => {
-            res.json({ post: result });
+            return res.json({ post: result });
           });
         });
       });
