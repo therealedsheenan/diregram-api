@@ -17,7 +17,7 @@ export type UserModel = mongoose.Document & {
   generateJWT: Function,
   firstName: String,
   lastName: String,
-  posts: PostModel[]
+  posts: PostModel[],
 };
 
 // schema
@@ -39,7 +39,8 @@ const UserSchema = new mongoose.Schema({
     index: true
   },
   avatar: {
-    type: String
+    type: String,
+    ref: "Avatar"
   },
   hash: String,
   salt: String,

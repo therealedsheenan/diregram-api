@@ -53,11 +53,11 @@ export let postUpload = (req: any, res: Response, next: NextFunction) => {
       next();
       // return res.json({ upload: result });
     })
-    .catch(err => {
-      res
+    .catch((error: Error) => {
+      return res
         .status(500)
         .json({
-          error: err
+          error
         });
     });
 };

@@ -8,8 +8,8 @@ export type UploadModel = mongoose.Document & {
 
 const UploadSchema = new mongoose.Schema({
   image: String,
-  owner: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  post: { type: mongoose.Schema.Types.ObjectId, ref: "Post", required: true }
+  owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  post: { type: mongoose.Schema.Types.ObjectId, ref: "Post" }
 }, { timestamps: true });
 
 // declare model

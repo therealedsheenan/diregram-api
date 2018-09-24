@@ -14,7 +14,7 @@ const profileOpts = [
     path: "posts",
     options: { sort: { createdAt: "desc" } },
     populate: [
-      { path: "image" },
+      { path: "image" }
       // { path: "owner" }
     ]
   }
@@ -25,7 +25,7 @@ const profileOpts = [
  */
 
 // login user
-export function login (req: Request, res: Response, next: NextFunction) {
+export function login(req: Request, res: Response, next: NextFunction) {
   const user = pick(req.body.user, ["password", "email"]);
   if (!user.email) {
     return res.status(422).json({ errors: { email: "can't be blank" } });
@@ -40,7 +40,9 @@ export function login (req: Request, res: Response, next: NextFunction) {
     "local",
     { session: false },
     (err: String, user: UserModel, info: String) => {
-      if (err) { return next(err); }
+      if (err) {
+        return next(err);
+      }
 
       if (!user) {
         return res.status(422).json(info);
@@ -53,24 +55,33 @@ export function login (req: Request, res: Response, next: NextFunction) {
 }
 
 // logout user
-export function logout (req: Request, res: Response, next: NextFunction) {
+export function logout(req: Request, res: Response, next: NextFunction) {
   // TODO: add logout logic here
   return false;
 }
 
 // register user
-export function signUp (req: Request, res: Response, next: NextFunction) {
-  const newUser: any = new User(pick(req.body.user, ["username", "email"]));
+export function signUp(req: Request, res: Response, next: NextFunction) {
+  const userProps = pick(req.body.user, ["username", "email"]);
+  const newUser: any = new User(
+    Object.assign({ ...userProps, posts: [], avatar: "" })
+  );
   newUser.setPassword(pick(req.body.user, ["password"]).password);
 
-  newUser.save().then(() => res.json({user: newUser.toAuthJSON()})
-  ).catch((e: Error) => {
-    res.status(400).send(e);
-  });
+  newUser
+    .save()
+    .then(() => res.json({ user: newUser.toAuthJSON() }))
+    .catch((e: Error) => {
+      res.status(400).send(e);
+    });
 }
 
 // read user profile from Authentication token
-export function readCurrentProfile (req: Request, res: Response, next: NextFunction) {
+export function readCurrentProfile(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   const userId = req.payload.id; // current user's id
   User.findById(userId, (err, user: UserModel) => {
     if (err || !user) {
@@ -79,10 +90,10 @@ export function readCurrentProfile (req: Request, res: Response, next: NextFunct
     }
     return res.json({ user: pick(user, ["username", "email", "createdAt"]) });
   });
-};
+}
 
 // read profile via USERNAME
-export function readProfile (req: Request, res: Response, next: NextFunction) {
+export function readProfile(req: Request, res: Response, next: NextFunction) {
   const userName = req.params.username;
   User.findOne({ username: userName }, (err, user: UserModel) => {
     if (err || !user) {
@@ -93,10 +104,10 @@ export function readProfile (req: Request, res: Response, next: NextFunction) {
       user: pick(user, ["username", "email", "createdAt"])
     });
   });
-};
+}
 
 // read cuyrrent user posts
-export function readUserPosts (req: Request, res: Response, next: NextFunction) {
+export function readUserPosts(req: Request, res: Response, next: NextFunction) {
   const userName = req.params.username;
   User.findOne({ username: userName })
     .populate({
@@ -116,10 +127,10 @@ export function readUserPosts (req: Request, res: Response, next: NextFunction) 
       ]
     })
     .exec((err, user: UserModel) => {
-      if (err) { return next(err); }
+      if (err) {
+        return next(err);
+      }
       const posts = user.posts;
-      return res.json({ posts })
+      return res.json({ posts });
     });
-};
-
-
+}

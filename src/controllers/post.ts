@@ -75,8 +75,8 @@ export function createPost (req: Request, res: Response, next: NextFunction) {
         });
       });
     })
-    .catch(err => {
-      return res.status(500).json({  error: err  });
+    .catch((error: Error) => {
+      return res.status(500).json({ error });
     });
 }
 
