@@ -3,16 +3,13 @@ import mongoose from "mongoose";
 export type UploadModel = mongoose.Document & {
   _id: mongoose.Schema.Types.ObjectId,
   image: string,
-  owner: string
-  // owner: { type: mongoose.Schema.Types.ObjectId, ref: "User"}
-  // // , required: [true, "can't be blank"]
+  owner: mongoose.Schema.Types.ObjectId,
 };
 
 const UploadSchema = new mongoose.Schema({
   image: String,
-  owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  post: { type: mongoose.Schema.Types.ObjectId, ref: "Post" }
-  // required: [true, "can't be blank"]
+  owner: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  post: { type: mongoose.Schema.Types.ObjectId, ref: "Post", required: true }
 }, { timestamps: true });
 
 // declare model
