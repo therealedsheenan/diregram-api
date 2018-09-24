@@ -3,6 +3,7 @@ import multer  from "multer";
 import mongoose from "mongoose";
 
 import { Upload, UploadModel } from "../models/Upload";
+import fileFilter from "../helpers/fileFilter";
 
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
@@ -13,26 +14,15 @@ const storage = multer.diskStorage({
   }
 });
 
-const fileFilter = (req: Request, file: any, cb: any) => {
-  // reject a file
-  if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
-    cb(undefined, true);
-  } else {
-    cb(undefined, false);
-  }
-};
-
 const opts = {
-  storage: storage,
+  storage,
+  fileFilter,
   limits: {
     fileSize: 1024 * 1024 * 5
   },
-  fileFilter: fileFilter
 };
 
-const upload = multer(opts);
-
-export let uploadMiddleware = upload.single("post[image]");
+export let uploadMiddleware = multer(opts).single("post[image]");
 
 /*
 * uploading image
@@ -71,7 +61,6 @@ export let postUpload = (req: any, res: Response, next: NextFunction) => {
         });
     });
 };
-
 
 /*
 * getting image
