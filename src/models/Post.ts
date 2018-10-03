@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { CommentModel } from "./Comment";
+import { LikeModel } from "./Like";
 
 
 export type PostModel = mongoose.Document & {
@@ -7,7 +8,8 @@ export type PostModel = mongoose.Document & {
   owner: string,
   caption: string,
   image: string,
-  comments: Array<CommentModel>
+  comments: Array<CommentModel>,
+  likes: Array<LikeModel>
 };
 
 const postSchema = new mongoose.Schema({
@@ -15,7 +17,8 @@ const postSchema = new mongoose.Schema({
   caption: String,
   title: String,
   image: { type: mongoose.Schema.Types.ObjectId, ref: "Upload" },
-  comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }]
+  comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
+  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Like" }]
 }, { timestamps: true });
 
 mongoose.model("Post", postSchema);

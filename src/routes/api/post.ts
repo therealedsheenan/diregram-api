@@ -3,6 +3,7 @@ import { Router } from "express";
 import auth from "../auth";
 import * as post from "../../controllers/post";
 import * as upload from "../../controllers/upload";
+import * as like from "../../controllers/like";
 
 const router = Router();
 
@@ -32,6 +33,13 @@ router.put(
   "/:postId",
   auth.required,
   post.updatePost
+);
+
+// like a post
+router.post(
+  "/:postId/like",
+  auth.required,
+  like.likeUnlikePost
 );
 
 export default router;

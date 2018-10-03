@@ -15,6 +15,7 @@ import "./models/Comment";
 import "./models/Post";
 import "./models/Upload";
 import "./models/Avatar";
+import "./models/Like";
 
 // passport strategy
 import "./services/passport";

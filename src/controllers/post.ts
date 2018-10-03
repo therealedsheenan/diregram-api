@@ -20,6 +20,13 @@ const postOpts = [{
   populate: {
     path: "owner",
     select: "username"
+  },
+}, {
+  path: "likes",
+  select: "_id",
+  populate: {
+    path: "userId",
+    select: "username _id"
   }
 }];
 
