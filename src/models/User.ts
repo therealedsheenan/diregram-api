@@ -4,6 +4,7 @@ import crypto from "crypto";
 import jwt from "jsonwebtoken";
 
 import { PostModel } from "./Post";
+import { LikeModel } from "./Like";
 
 export type UserModel = mongoose.Document & {
   type: String,
@@ -18,6 +19,7 @@ export type UserModel = mongoose.Document & {
   firstName: String,
   lastName: String,
   posts: PostModel[],
+  likes: LikeModel[],
 };
 
 // schema
@@ -51,7 +53,8 @@ const UserSchema = new mongoose.Schema({
     website: String,
     picture: String
   },
-  posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }]
+  posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
+  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Like" }],
 }, { timestamps: true });
 
 // unique data
