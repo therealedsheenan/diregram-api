@@ -35,11 +35,4 @@ router.put(
   post.updatePost
 );
 
-// like a post
-router.post(
-  "/:postId/like",
-  auth.required,
-  like.likeUnlikePost
-);
-
 export default router;
