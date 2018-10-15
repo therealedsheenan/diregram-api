@@ -10,12 +10,12 @@ import cors from "cors";
 import mongoose from "mongoose";
 
 // models
+import "./models/Like";
 import "./models/User";
 import "./models/Comment";
 import "./models/Post";
 import "./models/Upload";
 // import "./models/Avatar";
-import "./models/Like";
 
 // passport strategy
 import "./services/passport";
