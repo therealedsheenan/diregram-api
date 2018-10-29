@@ -26,10 +26,10 @@ const postSchema = new mongoose.Schema({
   likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Like" }]
 }, { timestamps: true });
 
-postSchema.methods.updateLikeCount = function () {
+postSchema.methods.updateLikeCount = async function () {
   const post = this;
 
-  User.count({
+  await User.count({
     likes: {
       $in: [post._id]
     }
@@ -43,7 +43,9 @@ postSchema.methods.updateLikeCount = function () {
 postSchema.methods.findUserLike = async function (currentUserId: mongoose.Schema.Types.ObjectId) {
   const post = this;
   try {
-    const like = await Like.findOne({ userId: currentUserId, postId: post._id }).exec();
+    const like = await Like
+      .findOne({ userId: currentUserId, postId: post._id })
+      .exec();
     return like;
   } catch (error) {
     throw new Error(error);
