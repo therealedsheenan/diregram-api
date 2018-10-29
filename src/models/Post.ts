@@ -3,6 +3,7 @@ import { CommentModel } from "./Comment";
 import { LikeModel } from "./Like";
 
 const User = mongoose.model('User');
+const Like = mongoose.model('Like');
 
 export type PostModel = mongoose.Document & {
   _id: mongoose.Schema.Types.ObjectId,
@@ -11,7 +12,8 @@ export type PostModel = mongoose.Document & {
   image: string,
   likesCount: number,
   comments: Array<CommentModel>,
-  likes: Array<LikeModel>
+  likes: Array<LikeModel>,
+  findUserLike: Function
 };
 
 const postSchema = new mongoose.Schema({
@@ -36,6 +38,16 @@ postSchema.methods.updateLikeCount = function () {
     post.likesCount = count;
     return post.save();
   });
+};
+
+postSchema.methods.findUserLike = async function (currentUserId: mongoose.Schema.Types.ObjectId) {
+  const post = this;
+  try {
+    const like = await Like.findOne({ userId: currentUserId, postId: post._id }).exec();
+    return like;
+  } catch (error) {
+    return false;
+  }
 };
 
 mongoose.model("Post", postSchema);
