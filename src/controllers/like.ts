@@ -76,22 +76,21 @@ export async function likeUnlikePost(req: RequestPayload, res: Response, next: N
     })
       .exec();
     const findUser = await post.findUserLike(userId);
-    console.log(findUser)
 
     if (findUser) {
       // unlike here
-      Like.findByIdAndRemove(findUser._id);
-      console.log("hello");
+      await Like.findByIdAndRemove(findUser._id);
       return res.json({ post });
     } else {
-      // console.log("error");
       // like here
-      // const like = new Like ({
-      //   userId,
-      //   postId
-      // });
-      //
-      // like.save().then(() => res.json({ like });
+      const like = await new Like ({
+        userId,
+        postId
+      });
+
+      await like
+        .save()
+        .then(() => res.json({ like }))
     }
 
   } catch (error) {
