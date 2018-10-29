@@ -20,7 +20,7 @@ const postSchema = new mongoose.Schema({
   owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   caption: String,
   title: String,
-  likesCount: {type: Number, default: 0},
+  likesCount: { type: Number, default: 0 },
   image: { type: mongoose.Schema.Types.ObjectId, ref: "Upload" },
   comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
   likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Like" }]
@@ -46,7 +46,7 @@ postSchema.methods.findUserLike = async function (currentUserId: mongoose.Schema
     const like = await Like.findOne({ userId: currentUserId, postId: post._id }).exec();
     return like;
   } catch (error) {
-    return false;
+    throw new Error(error);
   }
 };
 
