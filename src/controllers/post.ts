@@ -58,7 +58,7 @@ export function readAllPosts (req: Request, res: Response, next: NextFunction) {
 * Create new post
 * POST /post/
 */
-export function createPost (req: Request, res: Response, next: NextFunction) {
+export function createPost (req: RequestPayloadUpload, res: Response, next: NextFunction) {
   // upload.postUpload
   const newPost = new Post({
     owner: req.payload.id,

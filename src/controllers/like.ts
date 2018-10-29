@@ -1,11 +1,8 @@
-import passport from "passport";
 import mongoose from "mongoose";
 import { NextFunction, Request, Response } from "express";
 
 import { PostModel } from "../models/Post";
-import { UserModel } from "../models/user";
 import { LikeModel } from "../models/Like";
-import pick from "lodash/pick";
 
 const User = mongoose.model("User");
 const Post = mongoose.model("Post");
@@ -15,7 +12,7 @@ const Like = mongoose.model("Like");
 * like a post
 * POST /post/:id/like
 */
-export function likePost(req: Request, res: Response, next: NextFunction) {
+export function likePost(req: RequestPayload, res: Response, next: NextFunction) {
   const newLike = new Like({
     userId: req.payload.id,
     postId: req.params.postId
@@ -41,8 +38,6 @@ export function likePost(req: Request, res: Response, next: NextFunction) {
 }
 
 export function unlikePost(req: Request, res: Response, next: NextFunction) {
-  const userId = req.payload.id;
-  // const postId = req.params.postId;
   const likeId = req.body.likeId;
   const postId = req.body.postId;
 
@@ -51,7 +46,7 @@ export function unlikePost(req: Request, res: Response, next: NextFunction) {
     { $pull: { likes: likeId } },
     (error: Error, post: PostModel) => {
       if (error || !post) {
-        res.status(404);
+        res.status(500);
         return next();
       }
 
@@ -59,16 +54,48 @@ export function unlikePost(req: Request, res: Response, next: NextFunction) {
         if (error) {
           return res.status(500).json({ error });
         }
-        return res.status(200);
+        return res.status(200).json({});
       });
     }
   );
+}
 
-  // Post.findById(postId, (err, post: PostModel) => {
-  //   next();
-  //   // post.save((error: Error) => {
-  //   //   if (error) { return next(); }
-  //   //   return res.json({ post });
-  //   // });
-  // });
+export async function likeUnlikePost(req: RequestPayload, res: Response, next: NextFunction) {
+  const likeId = req.body.likeId;
+  const postId = req.body.postId;
+  const userId = req.payload.id;
+
+  try {
+    const post = await Post.findById(postId).populate({
+      path: "likes",
+      select: "_id",
+      populate: {
+        path: "userId",
+        select: "username _id"
+      }
+    })
+      .exec();
+    const findUser = await post.findUserLike(userId);
+    console.log(findUser)
+
+    if (findUser) {
+      // unlike here
+      Like.findByIdAndRemove(findUser._id);
+      console.log("hello");
+      return res.json({ post });
+    } else {
+      // console.log("error");
+      // like here
+      // const like = new Like ({
+      //   userId,
+      //   postId
+      // });
+      //
+      // like.save().then(() => res.json({ like });
+    }
+
+  } catch (error) {
+    res.status(404);
+    return next();
+  }
 }

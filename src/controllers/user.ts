@@ -16,7 +16,7 @@ export const avatarUploadMiddleware = (multer => {
       destination: function(req, file, cb) {
         cb(undefined, "./uploads/avatars/");
       },
-      filename: function(req, file, cb) {
+      filename: function(req: RequestPayload, file, cb) {
         cb(undefined, req.payload.id + file.originalname);
       }
     }),
@@ -76,7 +76,7 @@ export function signUp (req: Request, res: Response, next: NextFunction) {
 }
 
 // read user profile from Authentication token
-export function readCurrentProfile (req: Request, res: Response, next: NextFunction) {
+export function readCurrentProfile (req: RequestPayload, res: Response, next: NextFunction) {
   const userId = req.payload.id; // current user's id
   User.findById(userId, (err, user: UserModel) => {
     if (err || !user) {
@@ -131,7 +131,7 @@ export function readUserPosts (req: Request, res: Response, next: NextFunction) 
 /*
 * uploading avatar image
 */
-export let postAvatar = (req: Request, res: Response, next: NextFunction) => {
+export let postAvatar = (req: RequestPayload, res: Response, next: NextFunction) => {
   if (!req.file.path) {
     return res.status(422).json({ errors: { file: "can't be blank" } });
   }
